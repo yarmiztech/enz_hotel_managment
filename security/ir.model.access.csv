@@ -1,0 +1,6 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_room_types,room.types.group_user,model_room_types,base.group_user,1,1,1,1
+access_hotel_configuration,hotel.configuration.group_user,model_hotel_configuration,base.group_user,1,1,1,1
+access_room_configuration,room.configuration.group_user,model_room_configuration,base.group_user,1,1,1,1
+access_sale_form,sale.form.group_user,model_sale_form,base.group_user,1,1,1,1
+access_sale_from_lines,sale.from.lines.group_user,model_sale_from_lines,base.group_user,1,1,1,1

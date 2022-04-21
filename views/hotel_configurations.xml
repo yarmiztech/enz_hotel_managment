@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="hotel_room_type_form" model="ir.ui.view">
+        <field name="name">Room Types</field>
+        <field name="model">room.types</field>
+        <field name="arch" type="xml">
+            <form string="Room Type">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="description"/>
+                            <field name="rent"/>
+                        </group>
+                        <group>
+
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="hotel_room_type_tree" model="ir.ui.view">
+        <field name="name">room Types</field>
+        <field name="model">room.types</field>
+        <field name="arch" type="xml">
+            <tree string="Room Types">
+                <field name="name"/>
+                <field name="description"/>
+                <field name="rent"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="hotel_room_type_action" model="ir.actions.act_window">
+        <field name="name">Room Types</field>
+        <field name="res_model">room.types</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No Room Types!
+            </p>
+        </field>
+    </record>
+
+    <record id="hotel_hotel_reg_form" model="ir.ui.view">
+        <field name="name">Hotel Registration</field>
+        <field name="model">hotel.configuration</field>
+        <field name="arch" type="xml">
+            <form string="Hotel Registration">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="no_of_rooms"/>
+                        </group>
+                        <group>
+                            <field name="no_of_floors"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Details">
+                            <field name="room_lines">
+                                <tree editable="bottom">
+                                    <field name="hotel_id" invisible="1"/>
+                                    <field name="room_no"/>
+                                    <field name="floor_no"/>
+                                    <field name="room_type_id"/>
+                                    <field name="no_of_adults"/>
+                                    <field name="no_of_childrens"/>
+                                    <field name="rent"/>
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="hotel_hotel_reg_tree" model="ir.ui.view">
+        <field name="name">Hotel Registration</field>
+        <field name="model">hotel.configuration</field>
+        <field name="arch" type="xml">
+            <tree string="Hotel Registration">
+                <field name="name"/>
+                <field name="no_of_rooms"/>
+                <field name="no_of_floors"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="hotel_hotel_reg_action" model="ir.actions.act_window">
+        <field name="name">Hotel Registration</field>
+        <field name="res_model">hotel.configuration</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No Hotels Registered!
+            </p>
+        </field>
+    </record>
+
+    <record id="hotel_room_reg_form" model="ir.ui.view">
+        <field name="name">Room Registration</field>
+        <field name="model">room.configuration</field>
+        <field name="arch" type="xml">
+            <form string="Room Registration">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="hotel_id"/>
+                            <field name="room_no"/>
+                            <field name="floor_no"/>
+                            <field name="room_type_id"/>
+                        </group>
+                        <group>
+                            <field name="no_of_adults"/>
+                            <field name="no_of_childrens"/>
+                            <field name="rent"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+
+    <record id="hotel_room_reg_tree" model="ir.ui.view">
+        <field name="name">Room Registration</field>
+        <field name="model">room.configuration</field>
+        <field name="arch" type="xml">
+            <tree string="Hotel Registration">
+                <field name="hotel_id"/>
+                <field name="room_no"/>
+                <field name="floor_no"/>
+                <field name="room_type_id"/>
+                <field name="no_of_adults"/>
+                <field name="no_of_childrens"/>
+                <field name="rent"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="hotel_room_reg_action" model="ir.actions.act_window">
+        <field name="name">Room Registration</field>
+        <field name="res_model">room.configuration</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No Rooms Registered!
+            </p>
+        </field>
+    </record>
+
+
+    <menuitem id="menu_hotel_root"
+              name="EnzHotelManagement"
+              sequence="35"/>
+    <menuitem id="menu_hotel_config"
+              name="Configuration" parent="menu_hotel_root"
+              sequence="35"/>
+    <menuitem id="menu_hotel_room_type"
+              name="Room Types" parent="menu_hotel_config"
+              action="hotel_room_type_action" sequence="1"/>
+    <menuitem id="menu_hotel_hotel_reg"
+              name="Hotels" parent="menu_hotel_config"
+              action="hotel_hotel_reg_action" sequence="2"/>
+    <menuitem id="menu_hotel_room_reg"
+              name="Rooms" parent="menu_hotel_config"
+              action="hotel_room_reg_action" sequence="3"/>
+</odoo>

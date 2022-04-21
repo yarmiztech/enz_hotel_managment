@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+
+    <record id="hotel_room_rent_order_search" model="ir.ui.view">
+        <field name="name">Sale Form</field>
+        <field name="model">sale.form</field>
+        <field name="arch" type="xml">
+            <search string="Sale Form Search">
+                <field name="name" filter_domain="['|', ('customer_id','ilike',self), ('name','ilike',self)]"
+                       string="Rent"/>
+                <field name="name"/>
+                <field name="state"/>
+                <field name="customer_id"/>
+                <filter string="Draft" domain="[('state', '=', 'draft')]" name="draft_order"/>
+                <filter string="Confirmed" domain="[('state', '=', 'confirmed')]" name="confirmed_order"/>
+                <filter string="Done" domain="[('state', '=', 'done')]" name="done_order"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="hotel_room_rent_order_form" model="ir.ui.view">
+        <field name="name">Sale Form</field>
+        <field name="model">sale.form</field>
+        <field name="arch" type="xml">
+            <form string="Sale Form">
+                <header>
+                    <field name="state" widget="statusbar"/>
+                    <button name="confirm" type="object" class="oe_highlight" string="Confirm"
+                            attrs="{'invisible':[('state','!=','draft')]}"/>
+                    <button name="create_advance_payment" type="object" class="oe_highlight" string="Advance Payment"
+                            attrs="{'invisible':['|',('invoice_visibility','=',True),('state','!=','confirmed')]}"/>
+                    <button name="create_invoice" type="object" class="oe_highlight" string="Create Invoice"
+                            attrs="{'invisible':['|',('invoice_visibility','=',True),('state','!=','confirmed')]}"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="customer_id" required="1"/>
+                            <field name="hotel_id" required="1"/>
+                            <field name="no_of_rooms"/>
+                        </group>
+                        <group>
+                            <field name="date"/>
+                            <field name="no_of_adults"/>
+                            <field name="no_of_childrens"/>
+                            <field name="invoice_visibility" invisible="1"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Details">
+                            <field name="order_lines" context="{'default_hotel_id':hotel_id}">
+                                <tree editable="bottom">
+                                    <field name="sale_id" invisible="1"/>
+                                    <field name="hotel_id" invisible="1"/>
+                                    <field name="room_type"/>
+                                    <field name="room_ids" widget="many2many_tags"/>
+                                    <field name="no_of_rooms" sum="Total"/>
+                                    <field name="rent" sum="Total"/>
+                                    <field name="tax_id" widget="many2many_tags"/>
+                                    <field name="rent_subtotal" sum="Total"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="Advance">
+                            <field name="adavance_lines" mode="tree,kanban" context="{
+                            'default_payment_type': 'inbound',
+                            'default_partner_id':customer_id,
+                            'default_partner_type': 'customer',
+                            'search_default_inbound_filter': 1,
+                            'default_rent_id':id,
+                            'default_rent_visibility':True,
+                            'default_move_journal_types': ('bank', 'cash'),
+                        }"/>
+                        </page>
+                        <page string="Sale Order">
+                            <field name="salelines" mode="tree,kanban"/>
+                        </page>
+                        <page string="Invoices">
+                            <field name="invoicelines" mode="tree,kanban">
+                                <tree>
+                                    <field name="name" attrs="{'invisible':[('move_type', '!=', 'out_invoice')]}"/>
+                                    <field name="invoice_date"
+                                           attrs="{'invisible':[('move_type', '!=', 'out_invoice')]}"/>
+                                    <field name="invoice_date_due"
+                                           attrs="{'invisible':[('move_type', '!=', 'out_invoice')]}"/>
+                                    <field name="amount_total_signed"
+                                           attrs="{'invisible':[('move_type', '!=', 'out_invoice')]}" sum="Total"/>
+                                    <field name="state" widget="badge" decoration-success="state == 'posted'"
+                                           decoration-info="state == 'draft'" optional="show" attrs="{'invisible':[('move_type', '!=', 'out_invoice')]}"/>
+                                    <field name="payment_state" widget="badge"
+                                           decoration-danger="payment_state == 'not_paid'"
+                                           decoration-warning="payment_state in ('partial', 'in_payment')"
+                                           decoration-success="payment_state in ('paid', 'reversed')"
+                                           attrs="{'invisible': ['|',('payment_state', 'in', ('invoicing_legacy')),('move_type', '!=', 'out_invoice')]}"/>
+                                    <field name="move_type" attrs="{'invisible':[('move_type', '!=', 'out_invoice')]}" invisible="1"/>
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+
+    <record id="hotel_room_rent_order_tree" model="ir.ui.view">
+        <field name="name">Sale Form</field>
+        <field name="model">sale.form</field>
+        <field name="arch" type="xml">
+            <tree string="Sale Form">
+                <field name="date"/>
+                <field name="name"/>
+                <field name="customer_id"/>
+                <field name="hotel_id"/>
+                <field name="no_of_rooms"/>
+                <field name="no_of_adults"/>
+                <field name="no_of_childrens"/>
+                <field name="state"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="hotel_room_rent_order_action" model="ir.actions.act_window">
+        <field name="name">Sale Form</field>
+        <field name="res_model">sale.form</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No Rent Orders!
+            </p>
+        </field>
+    </record>
+    <record id="hotel_room_rent_confirmedorder_action" model="ir.actions.act_window">
+        <field name="name">Sale Form</field>
+        <field name="res_model">sale.form</field>
+        <field name="view_mode">tree,form</field>
+        <field name="context">{"search_default_confirmed_order":1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No Rent Orders!
+            </p>
+        </field>
+    </record>
+    <record id="hotel_room_rent_donedorder_action" model="ir.actions.act_window">
+        <field name="name">Sale Form</field>
+        <field name="res_model">sale.form</field>
+        <field name="view_mode">tree,form</field>
+        <field name="context">{"search_default_done_order":1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No Rent Orders!
+            </p>
+        </field>
+    </record>
+
+
+
+    <record id="account_payment_inherit" model="ir.ui.view">
+        <field name="name">Account Payment Inherit</field>
+        <field name="model">account.payment</field>
+        <field name="inherit_id" ref="account.view_account_payment_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='ref']" position="after">
+                <field name="rent_id" attrs="{'invisible':[('rent_visibility','=',False)]}"/>
+                <field name="rent_visibility" invisible="1"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="saleorder_inherited" model="ir.ui.view">
+        <field name="name">SO Inherit</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='partner_id']" position="after">
+                <field name="rent_id" attrs="{'invisible':[('rent_visibility','=',False)]}"/>
+                <field name="rent_visibility" invisible="1"/>
+            </xpath>
+        </field>
+    </record>
+    <record id="accountmove_inherited" model="ir.ui.view">
+        <field name="name">Account Move Inherit</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="account.view_move_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='partner_id']" position="after">
+                <field name="rent_id" attrs="{'invisible':[('rent_visibility','=',False)]}"/>
+                <field name="rent_visibility" invisible="1"/>
+            </xpath>
+        </field>
+    </record>
+
+
+    <menuitem id="menu_hotel_sale"
+              name="Rent" parent="menu_hotel_root"
+              sequence="1"/>
+    <menuitem id="menu_hotel_room_rent_order"
+              name="New" parent="menu_hotel_sale"
+              action="hotel_room_rent_order_action" sequence="1"/>
+    <menuitem id="menu_hotel_room_rent_orderconfirmed"
+              name="Confirmed" parent="menu_hotel_sale"
+              action="hotel_room_rent_confirmedorder_action" sequence="2"/>
+    <menuitem id="menu_hotel_room_rent_orderdone"
+              name="Done" parent="menu_hotel_sale"
+              action="hotel_room_rent_donedorder_action" sequence="3"/>
+</odoo>
